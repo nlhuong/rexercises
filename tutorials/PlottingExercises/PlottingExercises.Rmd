@@ -1,0 +1,68 @@
+---
+title: "Base Plotting"
+author: Lan Huong Nguyen
+tutorial:
+  id: "com.exercises.base-plotting"
+  version: 100.0
+output: 
+  learnr::tutorial:
+     progressive: true
+runtime: shiny_prerendered
+---
+
+options(tutorial.exercise.timelimit = 10)
+
+
+```{r setup, include=FALSE}
+library(learnr)
+library(checkr)
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE, exercise.checker = checkr::checkr_tutor)
+```
+
+
+## 
+
+*Enter your code directly into the chunks and press the 'Run Code' button to execute it.
+There are multiple exercises for each topic, you must complete an exercise and press 'Continue'
+to move onto the next one. Only once a tick mark appears next to every exercise should you 
+be able to continue to the next section.*
+
+
+### Exercise 1
+
+**Download 'Credit.csv' file** from http://www-bcf.usc.edu/~gareth/ISL/data.html 
+to your 'Downloads' directory. Set the 'current directory' to be the 'Downloads' folder,
+which now contains the 'Credit.csv' file. 
+
+```{r s1e1, exercise=TRUE}
+
+```
+
+```{r s1e1-hint}
+# Use the following setwd() function
+```
+
+```{r s1e1-solution}
+# Set the current directory to 'Downloads' folder folder:
+setwd("~/Downloads/")
+```
+
+
+###
+
+```{r, pDir}
+setwd("~/Downloads/")
+```
+
+
+Use `file.show()` function to display the contants of the file 'Credit.csv'
+in 'dataset' directory:
+
+```{r s1e1i, exercise=TRUE, exercise.setup = "pDir"}
+
+```
+
+```{r s1e1i-solution}
+file.show("Credit.csv")
+```

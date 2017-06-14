@@ -1,0 +1,1152 @@
+---
+title: "Programming with R"
+tutorial:
+  id: "com.exercises.programming"
+  version: 1.0
+output: 
+  learnr::tutorial:
+     progressive: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(checkr)
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE, exercise.checker = checkr::checkr_tutor)
+```
+
+
+## Logical Statements
+
+*Enter your code directly into the chunks and press the 'Run Code' button to execute it.
+There are multiple exercises for each topic, you must complete an exercise and press 'Continue'
+to move onto the next one. Only once a tick mark appears next to every exercise should you 
+be able to continue to the next section.*
+
+
+### Exercise 1
+
+In this exercise will use data from a [reporsitory](https://github.com/tategallery/collection)
+containing information around 70,000 artworks owned by [TATE](http://www.tate.org.uk/)
+art galleries. Read the 'artist_data.csv' file (from https://raw.githubusercontent.com/tategallery/collection/master/artist_data.csv) 
+into R:
+
+```{r pS1}
+artists_df <- read.csv("https://raw.githubusercontent.com/tategallery/collection/master/artist_data.csv")
+```
+
+```{r s1e1, exercise=TRUE}
+artists_df <- 
+```
+
+
+```{r s1e1-hint}
+# Use read.csv() function and supply the given URL address
+```
+
+
+```{r s1e1-solution}
+artists_df <- read.csv("https://raw.githubusercontent.com/tategallery/collection/master/artist_data.csv")
+```
+
+
+```{r s1e1-check}
+test_0 <- find_assignment("artists_df", "you need to create a data.frame named 'artists_df'")
+test_1 <- find_call("read.csv(whatever)", "you need to use read.csv() function")
+test_2 <- find_statement("https://raw.githubusercontent.com/tategallery/collection/master/artist_data.csv",
+                         "wrong url address")
+USER_CODE %>% test_0 %>% test_1 %>% test_2 
+soln_test(USER_CODE, SOLN_CODE, res = final_, 
+          same_(function(S, R, hint = hint) {ifelse(identical(S, R), "", "incorrect results")}, 
+                substitute(res)))
+```
+
+###
+
+Check the dimension of 'artists_df':
+
+```{r s1e1i, exercise=TRUE, exercise.setup = "pS1"}
+
+```
+
+```{r s1e1i-solution}
+dim(artists_df)
+```
+
+Inspect the structure of 'artists_df' using `str()` function:
+
+```{r s1e1ii, exercise=TRUE, exercise.setup = "pS1"}
+
+```
+
+```{r s1e1ii-solution}
+str(artists_df)
+```
+
+### 
+
+Using square brackets, and `which()` function, extract a subset of artists who 
+were born in the 19th century, i.e. those artists whose year of birth is from 
+1801 to 1900 (inclusive):
+
+```{r s1e1iii, exercise=TRUE, exercise.setup = "pS1"}
+artists19th <- ...
+```
+
+
+```{r s1e1iii-hint}
+# Use square brackets to subset the 'artists_df' and which() function 
+# as well as '>=' and '<=' operators to select the artist of interest
+```
+
+
+```{r s1e1iii-solution}
+artists19th <- artists_df[which(artists_df$yearOfBirth >= 1801 & artists_df$yearOfBirth <= 1900), ]
+```
+
+
+```{r s1e1iii-check}
+test_0 <- find_assignment("artists19th", "you need to create a data.frame named 'artists19th'")
+test_1 <- find_statement("(.*)\\[(.*)\\]", "you need to use square brackets", regex = TRUE)
+USER_CODE %>% test_0 %>% test_1  
+soln_test(USER_CODE, SOLN_CODE, res = final_, 
+          same_(function(S, R, hint = hint) {ifelse(identical(S, R), "", "incorrect results")}, 
+                substitute(res)))
+```
+
+###
+
+```{r pS1i}
+artists_df <- read.csv("https://raw.githubusercontent.com/tategallery/collection/master/artist_data.csv")
+artists19th <- artists_df[artists_df$yearOfBirth >= 1801 & artists_df$yearOfBirth <= 1900, ]
+```
+
+What is the fraction of artists in 'artists_df' born in the 19th century?
+
+```{r s1e1iv, exercise=TRUE, exercise.setup = "pS1i"}
+
+```
+
+
+```{r s1e1iv-hint}
+# Find the number of rows in 'artists19th' and 'artists_df' to answer this question
+```
+
+
+```{r s1e1iv-solution}
+nrow(artists19th)/nrow(artists_df)
+# or 
+dim(artists19th)[1]/dim(artists_df)[1]
+```
+
+
+```{r s1e1iv-check}
+soln_test(USER_CODE, SOLN_CODE, res = final_, 
+          same_(function(S, R, hint = hint) {ifelse(identical(S, R), "", "incorrect results")}, 
+                substitute(res)))
+```
+
+
+###
+
+Observe, that in the above example the function `which()` returns a set of indices 
+where the condition `artists_df$yearOfBirth >= 1801 & artists_df$yearOfBirth <= 1900` 
+evaluates to `TRUE` and allows us to select the rows with artist from the 19th century.
+However, R also supports logical indexing and you can ommit the `which()` function:
+
+
+```{r s1e1v, exercise=TRUE, exercise.setup = "pS1"}
+artists19th <- artists_df[artists_df$yearOfBirth >= 1801 & artists_df$yearOfBirth <= 1900, ]
+head(artists19th)
+dim(artists19th)
+```
+
+**Note** that the above produces exactly the data.frame 'artists19th' results as before.
+
+###
+
+Now from the set of 19th century artists select the ones whose place of
+birth was either London or Paris:
+
+```{r s1e1vi, exercise=TRUE, exercise.setup = "pS1i"}
+artists19th_lon_par <- 
+```
+
+
+```{r s1e1vi-hint}
+# Again, use the square brackets notation but this time the '%in%' operator
+# to select artists of interest
+```
+
+
+```{r s1e1vi-solution}
+artists19th_lon_par <- artists19th[
+  artists19th$placeOfBirth %in% c("London, United Kingdom", "Paris, France"), ]
+```
+
+
+```{r s1e1vi-check}
+test_0 <- find_statement("artists19th", "you need to subset a data.frame named 'artists19th'")
+test_1 <- find_statement("placeOfBirth", "you need to use 'find_statement' column to subset the data")
+USER_CODE %>% test_0 %>% test_1  
+soln_test(USER_CODE, SOLN_CODE, res = final_, 
+          same_(function(S, R, hint = hint) {ifelse(identical(S, R), "", "incorrect results")}, 
+                substitute(res)))
+```
+
+
+How many artists born in  the 19th century London and Paris were there in the
+TATE collection?
+
+```{r pS1ii}
+artists_df <- read.csv("https://raw.githubusercontent.com/tategallery/collection/master/artist_data.csv")
+artists19th <- artists_df[artists_df$yearOfBirth >= 1801 & artists_df$yearOfBirth <= 1900, ]
+artists19th_lon_par <- artists19th[
+  artists19th$placeOfBirth %in% c("London, United Kingdom", "Paris, France"), ]
+```
+
+```{r s1e1vii, exercise=TRUE, exercise.setup = "pS1ii"}
+
+```
+
+```{r s1e1vii-solution}
+nrow(artists19th_lon_par)
+```
+
+
+```{r s1e1vii-check}
+soln_test(USER_CODE, SOLN_CODE, res = final_, 
+          same_(function(S, R, hint = hint) {ifelse(identical(S, R), "", "incorrect results")}, 
+                substitute(res)))
+```
+
+
+###
+
+How many artists in 'artists_df' have a missing year of death data?
+
+```{r s1e1viii, exercise=TRUE, exercise.setup = "pS1"}
+
+```
+
+
+```{r s1e1viii-hint-1}
+# To know which artists have missing year of death use is.na() function
+```
+
+```{r s1e1viii-hint-2}
+# To count the artists use sum() pr nrow() if you previously subset the data
+```
+
+
+```{r s1e1viii-solution}
+nrow(artists_df[is.na(artists_df$yearOfDeath), ])
+# or
+sum(is.na(artists_df$yearOfDeath))
+```
+
+
+```{r s1e1viii-check}
+soln_test(USER_CODE, SOLN_CODE, res = final_, 
+          same_(function(S, R, hint = hint) {ifelse(identical(S, R), "", "incorrect results")}, 
+                substitute(res)))
+```
+
+
+## If/else statements
+
+### Exercise 1
+
+In this exercise, we will learn a bit about the game of [Blackjack](http://www.wikihow.com/Play-Blackjack).
+Blackjack is a game where each player competes with the delealer,
+and not other players. Each player attempts to beat the dealer by getting a count 
+as close to 21 as possible, without exceeding it, ("busting"). Face cards (King, 
+Queen, Jack) are each counted as 10, Ace can be counted as either 1 or 11, and 
+any other card are counted as the numeric value shown on the card.
+
+In each round of the game:
+
+* At the beginning every player gets 2 face-up cards from the dealer; the dealer 
+also receives 2 cards, but only one of them is face-up.
+* After that, on their turn players may "hit" (take a card), "stand" (end their 
+turn), "double" (double wager, take a single card and finish), "split" (if the 
+two cards have the same value, separate them to make two hands) or "surrender" 
+(give up a half-bet and retire from the game). Players continue
+until they stand or go "bust", i.e. the total value of their hand exceeds 21.
+* When the dealer has served every player, his face-down card is turned up. 
+If the total is 17 or more, he must stand, otherwise he must 
+continue to take cards until the total is 17 or more. 
+If the dealer has an ace, and counting it as 11 would bring his 
+total to 17 or more, he must stand. The dealer can't double, split or surrender.
+* Lastly each player's hand is compared with the dealer's one and who comes 
+closer to 21 becomes a winner.
+
+More details on the game can be found at: 
+http://www.bicyclecards.com/how-to-play/blackjack/
+
+### Game setup
+
+```{r pS2}
+# Deck of cards
+card_deck <- data.frame(card = rep(c(2:10, c("J", "Q", "K", "A")), 4),
+                        value = rep(c(2:10, c(10, 10, 10, Inf)), 4),
+                        stringsAsFactors = FALSE)
+# Here we repeat indexing 6 times to stack 6 decks of cards
+blackjack_cards <- card_deck[rep(1:nrow(card_deck), 6), ]
+
+# Shuffle cards
+set.seed(1234)
+blackjack_cards <- blackjack_cards[sample(1:nrow(blackjack_cards), size = nrow(blackjack_cards)), ]
+
+# We rename the rows of 'blackjack_cards' to be the ordering of cards after the shuffle:
+rownames(blackjack_cards) <- 1:nrow(blackjack_cards)
+
+# Initial deal:
+H <- blackjack_cards[1:2, ]
+D <- blackjack_cards[3:4, ]
+Drev <- D[1, ]
+remain_cards <- blackjack_cards[5:nrow(blackjack_cards), ]
+
+if (all(H$card != "A")) {
+  V <- sum(H$value)
+} else {
+  H1 <- H[H$card != "A", ]
+  no_aces<- nrow(H) - nrow(H1)
+  # Note that only 1 of the aces can be counted as 11 otherwise you "bust"
+  V1 <- sum(H1$value) + 11 + (no_aces- 1) 
+  V2 <- sum(H1$value) + no_aces
+  if (V1 > 21) { 
+    # if counting ace as 11 result in "busting", count it as 1
+    V <- V2
+  } else {
+    V <- V1 
+  }
+}
+
+# Function for counting points in a hand 'H'
+count_points <- function(H) {
+  if (all(H$card != "A")) {
+    V <- sum(H$value)
+  } else {
+    # Count points for non-aces:
+    V0 <- sum(H$value[H$card != "A"])
+    no_aces <- sum(H$card == "A")
+    # Count one ace as 11
+    V1 <- V0 + 11 + (no_aces - 1) 
+    # Count all aces as 1
+    V2 <- V0 + no_aces
+    V <- ifelse(V1 > 21, V2, V1) 
+  }
+  return(V)
+}
+
+
+# Function for updating a hand
+update_players_hand <- function(H, Drev, blackjack_cards) {
+  V <- count_points(H)
+  next_card <- blackjack_cards[1, ]
+  if (V == 11 || all(c(V %in% c(9, 10), Drev$value < 7))) {
+    A <- "double"
+  } else if (V < 12) {
+    A <- "hit"
+  } else if (all(c(V >= 12, V <= 16)) && Drev$value > 7) {
+    A <- "hit"
+  } else if ("A" %in% H$card && all(c(V >= 13, V <= 17))) {
+    A <- "hit"
+  } else {
+    A <- "stand"
+  }
+  if (A %in% c("double", "hit")) {
+    H <- rbind(H, next_card)
+    blackjack_cards <- blackjack_cards[-1, ]
+  }
+  return(list(A = A, H = H, remaining_cards = blackjack_cards))
+}
+
+# Function for initial deal
+init_deal <- function(blackjack_cards, shuffle = TRUE) {
+  if (shuffle == TRUE) {
+    blackjack_cards <- blackjack_cards[sample(1:nrow(blackjack_cards), nrow(blackjack_cards)), ]
+  }
+  H <- blackjack_cards[1:2, ]
+  D <- blackjack_cards[3:4, ]
+  # Remove players and dealers hand (4 crads) from the stack: 
+  blackjack_cards <- blackjack_cards[5:nrow(blackjack_cards), ]
+  return(list(player_hand = H, dealer_hand = D, remaining_cards = blackjack_cards))
+}
+
+
+# Dealer's turn
+dealers_play <- function(D, remain_cards) {
+  # Initial points:
+  dealV0 <- sum(D$value[D$card != "A"])
+  no_aces <- sum(D$card == "A")
+  if (no_aces > 0) {
+   dealV0 <- dealV0 + 11 + (no_aces - 1)
+  }
+  tot <- dealV0
+  while (tot < 17) {
+    next_card <- remain_cards[1, ]
+    remain_cards <- remain_cards[-1, ]
+    D <- rbind(D, next_card)
+    if (next_card$card != "A") {
+      tot <- tot + next_card$value
+    } else if (tot + 11 > 17) {
+      tot <- tot + 11
+    } else {
+      tot <- tot + 1
+    }
+  }
+  return(list(D = D, remain_cards = remain_cards))
+}
+
+
+# players's turn
+participants_play <- function(H, Drev, remain_cards) {
+  stop <- FALSE
+  while (!stop) {
+    cur_turn <- update_players_hand(H, Drev, remain_cards)
+    H <- cur_turn$H
+    remain_cards <- cur_turn$remaining_cards
+    V <- count_points(H)
+    if (cur_turn$A %in% c("stand", "double") || V >= 21) {
+      stop <- TRUE
+    }
+  }
+  return(list(H = H, remain_cards = remain_cards))
+}
+
+
+blackjack_round <- function(blackjack_cards, shuffle = TRUE){
+  # Set up the initial deal:
+  init <- init_deal(blackjack_cards, shuffle)
+  Drev <- init$dealer_hand[1, ]
+  players_turn <- participants_play(init$player_hand, Drev, init$remaining_cards)
+  dealers_turn <- dealers_play(init$dealer_hand, players_turn$remain_cards)
+  remain_cards <- dealers_turn$remain_cards
+  
+  players_hand <- players_turn$H
+  players_points <- count_points(players_turn$H)
+  dealers_hand <- dealers_turn$D
+  dealers_points <- count_points(dealers_turn$D)
+
+  cat("Player's final hand:", players_hand$card, "\n")
+  cat("Players's final points:", players_points, "\n")
+  cat("Dealer's final hand:", dealers_hand$card, "\n")
+  cat("Dealer's final points:", dealers_points, "\n")
+  
+  player_diff <- 21 - players_points
+  dealer_diff <- 21 - dealers_points
+  
+  score <- c()
+  if ((dealer_diff == player_diff) || (dealer_diff < 0 && player_diff < 0)) {
+    cat("Player push with the dealer.")
+    score <- c(score, 0)
+  } else if (dealer_diff >= 0 && (dealer_diff < player_diff || player_diff < 0)) {
+    cat("Player lost.")
+    score <- c(score, -1)
+  } else {
+    cat("Player won!")
+    score <- c(score, 1)
+  }
+  return(list(remain_cards = remain_cards, players_hand = players_hand, 
+              players_points = players_points, dealers_hand = dealers_hand,
+              dealers_points = dealers_points, score = score))
+}
+```
+
+Here we build a data.frame 'card_deck' representing a standard deck 
+of 52 cards with two columns: one denoting the card identity and its 
+corresponding Blackjack value. Since, an ace in Blackjack 
+does not have an univocal count, we will encode its value as 'Inf' (infinity) 
+which will make it easy to detect and hand as a special case:
+
+```{r s2e0, exercise = TRUE}
+# Deck of cards
+card_deck <- data.frame(card = rep(c(2:10, c("J", "Q", "K", "A")), 4),
+                        value = rep(c(2:10, c(10, 10, 10, Inf)), 4),
+                        stringsAsFactors = FALSE)
+dim(card_deck)
+# Here 'rep(x, n)' function repeats x, n number of times
+```
+
+At the casinos Blackjacks are usually played with 6 shuffled decks:
+
+```{r s2e00, exercise = TRUE, exercise.setup = "pS2"}
+set.seed(1234)
+# Here we repeat indexing 6 times to stack 6 decks of cards
+blackjack_cards <- card_deck[rep(1:nrow(card_deck), 6), ]
+
+# Check that the number of rows in 'blackjack_cards' is 6x52:
+dim(blackjack_cards)
+
+# Shuffle cards
+blackjack_cards <- blackjack_cards[sample(1:nrow(blackjack_cards), size = nrow(blackjack_cards)), ]
+
+# We rename the rows of 'blackjack_cards' to be the ordering of cards after the shuffle:
+rownames(blackjack_cards) <- 1:nrow(blackjack_cards)
+
+# Now we look at 10 first cards
+knitr::kable(head(blackjack_cards, 10))
+```
+
+The cards are placed in a [dealer's shoe](https://en.wikipedia.org/wiki/Shoe_(cards)https://en.wikipedia.org/wiki/Shoe_(cards)).
+and dealt consecutively.
+
+### 
+
+Imagine you are **the only player at the table** competing with the dealer.
+Two cards first cards from teh 'blackjack_cards' are dealt to you. 
+Write code contating**if/else statements** that compute the value, 'V', of your hand, 'H'. 
+If the hand contains an ace, "A", count it as either 1 or 11, whichever 
+achieves the value of the hand closer to 21, but not exceeding it.
+
+```{r s2e1, exercise=TRUE, exercise.setup = "pS2"}
+# Complete (...) in the following code:
+H <- blackjack_cards[1:2, ]
+if (...) {
+  V <- ...
+} else {
+  ...
+}
+cat("The hand, 'H' = ", H$card, ", has value", V)
+```
+
+
+```{r s2e1-hint-1}
+# Cases were the 'H' hand contains or does not contain aces
+# should be addressed as separate if/else cnditions
+```
+
+```{r s2e1-hint-2}
+# You can use 'all()' or 'any()' function to combine locgical statements
+# Access the documentation using:
+?all
+?any
+```
+
+
+```{r s2e1-solution}
+# This is an example solution
+H <- blackjack_cards[1:2, ]
+
+if (all(H$card != "A")) {
+  V <- sum(H$value)
+} else {
+  H1 <- H[H$card != "A", ]
+  no_aces<- nrow(H) - nrow(H1)
+  # Note that only 1 of the aces can be counted as 11 otherwise you "bust"
+  V1 <- sum(H1$value) + 11 + (no_aces- 1) 
+  V2 <- sum(H1$value) + no_aces
+  if (V1 > 21) { 
+    # if counting ace as 11 result in "busting", count it as 1
+    V <- V2
+  } else {
+    V <- V1 
+  }
+}
+cat("The hand, 'H' = ", H$card, ", has value", V)
+```
+
+### 
+
+After all players are dealt two cards, the dealer reveals one of his cards.
+
+```{r s2e000, exercise=TRUE, exercise.setup = "pS2"}
+D <- blackjack_cards[3:4, ]
+Drev <- D[1, ]
+Drev
+```
+
+###
+
+Suppose, you are a novice in Blackjack and you play a [simplified basic strategy](http://blackjackcalculation.com/blackjack-super-easy-basic-strat.html),
+i.e. you:
+
+* Always double when your hand is 11
+* Double 9 or 10 hand when the dealer has 2-6
+* Hit when your is 12-16 when the dealer has 7-Ace
+* Hit when your hand contains an ace and the value of the hand is 13-17
+* Otherwise stand. 
+
+Here we never 'split' to make the following exercises less complicated.
+
+
+Write if/else statements to print your action, 'A', ("split", "double", "hit", "stand") 
+for a hand 'H' constisting of two first cards in the stack with the value 'V' against 
+the dealer's revealed card 'Drev' from above, using on the above strategy:   
+
+
+```{r s2e1i, exercise=TRUE, exercise.setup = "pS2"}
+# Complete (...) in the following code:
+# You can use 'H', 'V' and 'Drev' variables created before, as they are stored in memory
+if (...) {
+  A <- "double"
+} else if (...) {
+  A <- "hit"
+} else {
+  A <- "stand"
+}
+
+cat("This turn, player", A)
+```
+
+
+```{r s2e1i-hint}
+# You need to encode the given strategies as conditionals based
+# on 'H' and 'Drev', use '&&', '||' ('and', 'or' operators) or
+# preferred 'all()', 'any()' functions to combine logical statements.
+# Function 'identical()' might also be useful if you want to compare
+# vectors.
+```
+
+
+```{r s2e1i-solution}
+# This is an example solution:
+
+if (V == 11 || all(c(V %in% c(9, 10), Drev$value < 7))) {
+  A <- "double"
+} else if (V < 12) {
+  A <- "hit"
+} else if (all(c(V >= 12, V <= 16)) && Drev$value > 7) {
+  A <- "hit"
+} else if ("A" %in% H$card && all(c(V >= 13, V <= 17))) {
+  A <- "hit"
+} else {
+  A <- "stand"
+}
+
+cat("This turn, player", A)
+```
+
+## Functions
+
+### Exercise 1
+
+Write a function which counts the points of a given Blackjack hand, 'H'
+based on the code written in the previous section:
+
+```{r s3e0, exercise = TRUE, exercise.setup = "pS2"}
+H <- blackjack_cards[1:2, ]
+
+if (all(H$card != "A")) {
+  V <- sum(H$value)
+} else {
+  H1 <- H[H$card != "A", ]
+  no_aces<- nrow(H) - nrow(H1)
+  # Note that only 1 of the aces can be counted as 11 otherwise you "bust"
+  V1 <- sum(H1$value) + 11 + (no_aces- 1) 
+  V2 <- sum(H1$value) + no_aces
+  if (V1 > 21) { 
+    # if counting ace as 11 result in "busting", count it as 1
+    V <- V2
+  } else {
+    V <- V1 
+  }
+}
+cat("The hand, 'H' = ", H$card, ", has value", V)
+```
+
+
+The function should take a data.frame 'H' with two columns 'card' and 'value'
+representing the current hand, and return its total point count.
+
+```{r s3e1, exercise=TRUE, exercise.setup = "pS2"}
+# Complete (...) in the following code:
+count_points <- function(H) {
+  ...
+  V <- ...
+  return(V)
+}
+```
+
+
+```{r s3e1-hint}
+# Use the code with if/else statements provided above
+```
+
+
+```{r s3e1-solution}
+# This is an example solution
+count_points <- function(H) {
+  if (all(H$card != "A")) {
+    V <- sum(H$value)
+  } else {
+    # Count points for non-aces:
+    V0 <- sum(H$value[H$card != "A"])
+    no_aces <- sum(H$card == "A")
+    # Count one ace as 11
+    V1 <- V0 + 11 + (no_aces - 1) 
+    # Count all aces as 1
+    V2 <- V0 + no_aces
+    V <- ifelse(V1 > 21, V2, V1) 
+  }
+  return(V)
+}
+```
+
+
+### Exercise 2
+
+Suppose, you are playing th basic strategy as the one described
+in the previous section. Write a function that takes your hand, 'H',
+the dealer's revealed card, 'Drev', and the current 'blackjack_cards' 
+stack as inputs and returns a lists consisting of player's action taken
+and his or hers updated hand. 
+
+'H', 'Drev' and 'blackjack_cards' are each a data.frame with columns 
+'card' and 'value'. The function should return the value 
+of the current hand 'H' then take an action corresponding to
+the basic strategy as well as the remaining stack of cards:
+
+
+```{r s3e2, exercise=TRUE, exercise.setup = "pS2"}
+# Complete (...) in the following code:
+update_players_hand <- function(H, Drev, blackjack_cards) {
+  ...
+  return(list(A = ..., H = ..., remaining_cards = ...))
+}
+# Here A is a string specifying an action and H is a data.frame representing the updated hand
+```
+
+
+```{r s3e2-hint}
+#  To help you we provide some helper code which you should incorporate in your function:
+
+V <- count_points(H)
+next_card <- blackjack_cards[1, ]
+if (V == 11 || all(c(V %in% c(9, 10), Drev$value < 7))) {
+  A <- "double"
+} else if (V < 12) {
+  A <- "hit"
+} else if (all(c(V >= 12, V <= 16)) && Drev$value > 7) {
+  A <- "hit"
+} else if ("A" %in% H$card && all(c(V >= 13, V <= 17))) {
+  A <- "hit"
+} else {
+  A <- "stand"
+}
+if (A %in% c("double", "hit")) {
+  H <- rbind(H, next_card)
+}
+
+```
+
+
+```{r s3e2-solution}
+# This is an example solution
+update_players_hand <- function(H, Drev, blackjack_cards) {
+  V <- count_points(H)
+  next_card <- blackjack_cards[1, ]
+  if (V == 11 || all(c(V %in% c(9, 10), Drev$value < 7))) {
+    A <- "double"
+  } else if (V < 12) {
+    A <- "hit"
+  } else if (all(c(V >= 12, V <= 16)) && Drev$value > 7) {
+    A <- "hit"
+  } else if ("A" %in% H$card && all(c(V >= 13, V <= 17))) {
+    A <- "hit"
+  } else {
+    A <- "stand"
+  }
+  if (A %in% c("double", "hit")) {
+    H <- rbind(H, next_card)
+  }
+  return(list(A = A, H = H, remaining_cards = blackjack_cards))
+}
+```
+
+### Exercise 3
+
+Write code setup an initial deal for a single player
+and the dealer. If indicated, the function should first shuffle 
+the cards. Then the function should assign a hand to the player, 'H', 
+and the dealer, 'D' from the top of the card stack. The function should 
+return a list with named elements and 'H', 'D' and 'blackjack_cards' 
+corresponding to the player's hand, the dealer's hand, and the remaining 
+stack if cards respectively. 
+
+```{r s3e3, exercise=TRUE, exercise.setup = "pS2"}
+
+init_deal <- function(blackjack_cards, shuffle = TRUE) {
+  # Shuffle cards:
+  ...
+  # Player's hand:
+  H <- ...
+  # Dealer's hand:
+  D <- ...
+  # Remove player's and dealer's hands (4 crads) from the stack: 
+  blackjack_cards <- ...
+  return(list(player_hand = H, dealer_hand = D, remaining_cards = blackjack_cards))
+}
+
+```
+
+
+```{r s3e3-hint-1}
+# Here 'shuffle' is an optional argument, by defult set to TRUE.
+# You should use an if statement shuffle the cards if 'shuffle' is set to TRUE. 
+# Use 'sample()' to generate a permutation of  cards' indices and use it for shuffling.
+```
+
+```{r s3e3-hint-2}
+# Extract the first 2 cards from the shuffled card stack using indexing 
+# as the player's hand. The next two cards should be assignedc to the dealer.
+```
+
+
+```{r s3e3-solution}
+# Example solution:
+init_deal <- function(blackjack_cards, shuffle = TRUE) {
+  if (shuffle == TRUE) {
+    blackjack_cards <- blackjack_cards[sample(1:nrow(blackjack_cards), nrow(blackjack_cards)), ]
+  }
+  H <- blackjack_cards[1:2, ]
+  D <- blackjack_cards[3:4, ]
+  # Remove players and dealers hand (4 crads) from the stack: 
+  blackjack_cards <- blackjack_cards[5:nrow(blackjack_cards), ]
+  return(list(player_hand = H, dealer_hand = D, remaining_cards = blackjack_cards))
+}
+```
+
+
+### Exercise 4 (function calling)
+
+Write code to simulate an initial deal for a sigle player and a dealer;
+then prints the action taken by the player and his updated hand,
+given that he or she follows the strategy provided.
+
+```{r s3e4, exercise=TRUE, exercise.setup = "pS2"}
+# Complete (...) in the following code:
+
+# 'blackjack_cards' is saved in memory
+
+# Set up the initial deal
+init <- ...
+
+# Use 'update_players_hand()' function created before 
+# to get player's action and the updated hand:
+
+...
+
+cat("Player's action is:", ...)
+cat("Player's hand is now: H =", ...)
+```
+
+
+```{r s3e4-solution}
+# Set up the initial deal
+init <- init_deal(blackjack_cards)
+
+# Extract the player's hand
+H <- init$player_hand
+
+# Extract the dealer's revealed (first) card:
+Drev <- init$dealer_hand[1, ]
+
+# Remaining cards after the initial deal:
+remain_cards <- init$remaining_cards
+
+# Player's first action:
+first_turn <- update_players_hand(H, Drev, remain_cards)
+
+cat("Player's action is:", first_turn$A)
+cat("Player's hand is now: H =", first_turn$H$card)
+```
+
+
+
+## Loops
+
+### Exercise 1
+
+In Blackjack, a round completes for a player whenever he or she 
+decides to "stand" or goes "bust" (when the value of the player's 
+hand exceeds 21). Write a `while` loop to simulate a complete round for 
+a single player against the dealer. Print out te player's final hand 
+and the corresponding value.
+
+
+```{r s4e1, exercise=TRUE, exercise.setup = "pS2"}
+# Set up the initial deal:
+init <- init_deal(blackjack_cards)
+H <- init$player_hand
+Drev <- init$dealer_hand[1, ]
+remain_cards <- init$remaining_cards
+
+# Complete (...) in the following code:
+stop <- FALSE
+while (!stop) {
+  # keep updating the player's hand until he doubles/stands/busts
+  ...
+
+}
+cat("Dealer's revealed card:", Drev$card)
+cat("Player's final hand is: H =", ...)
+cat("Player's final points are: V =", ...)
+```
+
+
+```{r s4e1-solution}
+# Set up the initial deal:
+init <- init_deal(blackjack_cards)
+H <- init$player_hand
+Drev <- init$dealer_hand[1, ]
+remain_cards <- init$remaining_cards
+
+# Solution:
+stop <- FALSE
+while (!stop) {
+  cur_turn <- update_players_hand(H, Drev, remain_cards)
+  H <- cur_turn$H
+  remain_cards <- cur_turn$remaining_cards
+  V <- count_points(H)
+  
+  # Note that when doubling a player takes in one card and then "stands" 
+  if (cur_turn$A %in% c("stand", "double") || V >= 21) {
+    stop <- TRUE
+  }
+}
+cat("Dealer's revealed card:", Drev$card)
+cat("Player's final hand is: H =", H$card)
+cat("Player's final points are: V =", V)
+```
+
+### 
+
+Convert the code you just wrote to a function
+which takes 'H' and 'remain_cards' as inputs
+and returns a list with the players's final hand 
+and the remaining stack:
+
+
+```{r s4e1i, exercise=TRUE, exercise.setup = "pS2"}
+participants_play <- function(H, remain_cards) {
+  ...
+}
+```
+
+
+```{r s4e1i-solution}
+participants_play <- function(H, Drev, remain_cards) {
+  stop <- FALSE
+  while (!stop) {
+    cur_turn <- update_players_hand(H, Drev, remain_cards)
+    H <- cur_turn$H
+    remain_cards <- cur_turn$remaining_cards
+    V <- count_points(H)
+    
+    # Note that when doubling a player takes in one card and then "stands" 
+    if (cur_turn$A %in% c("stand", "double") || V >= 21) {
+      stop <- TRUE
+    }
+  }
+  return(list(H = H, remain_cards = remain_cards))
+}
+
+```
+
+
+### Exercise 2
+
+ > When the dealer has served every player, his face-down card is turned up. 
+ If the total is 17 or more, he must stand. If the total is 16 or under, 
+ he must take a card. He must continue to take cards until the total is 17 
+ or more, at which point the dealer must stand. If the dealer has an ace, 
+ and counting it as 11 would bring his total to 17 or more (but not over 21), 
+ he must count the ace as 11 and stand. The dealer's decisions, then, are 
+ automatic on all plays, whereas the player always has the option of 
+ taking one or more cards. - See more at: 
+ http://www.bicyclecards.com/how-to-play/blackjack/#sthash.DaUmFTgL.dpuf
+
+Write code simulating a dealer's turn using a `while` loop.
+Assume 'D' the initial pair is loaded in memory.
+
+```{r s4e2, exercise=TRUE, exercise.setup = "pS2"}
+# Assume the remaining stack is stored in 'remain_cards' variable
+# and the the dealer's initial deal is stored in 'D'
+
+# Count the points for the initial pair:
+dealV0 <- sum(D$value[D$card != "A"])
+no_aces <- sum(D$card == "A")
+if (no_aces > 0) {
+  # Count one of the aces as 11
+ dealV0 <- dealV0 + 11 + (no_aces - 1)
+}
+
+# Complete (...) in the following code:
+dealV <- dealV0
+while (...) {
+  # Keep hitting until dealer's total >= 17
+  ...
+}
+
+cat("Dealer's final hand:", ...)
+cat("Dealer's final points:", ...)
+```
+
+
+```{r s4e2-solution}
+# Count the points for the initial pair:
+dealV0 <- sum(D$value[D$card != "A"])
+no_aces <- sum(D$card == "A")
+if (no_aces > 0) {
+  # Count one of the aces as 11
+ dealV0 <- dealV0 + 11 + (no_aces - 1)
+}
+
+tot <- dealV0
+while (tot < 17) {
+  # Dealer hits:
+  next_card <- remain_cards[1, ]
+  remain_cards <- remain_cards[-1, ]
+  D <- rbind(D, next_card)
+  if (next_card$card != "A") {
+    tot <- tot + next_card$value
+  } else if (tot + 11 > 17) {
+    tot <- tot + 11
+  } else {
+    tot <- tot + 1
+  }
+}
+
+cat("Dealer's final hand:", D$card)
+cat("Dealer's final points:", count_points(D))
+```
+
+
+### 
+
+Convert the code you just wrote to a function
+which takes 'D' and 'remain_cards' as inputs
+and returns the dealer's final hand:
+
+
+```{r s4e2i, exercise=TRUE, exercise.setup = "pS2"}
+dealers_play <- function(D, remain_cards) {
+  ...
+}
+```
+
+
+```{r s4e2i-solution}
+dealers_play <- function(D, remain_cards) {
+  # Initial points:
+  dealV0 <- sum(D$value[D$card != "A"])
+  no_aces <- sum(D$card == "A")
+  if (no_aces > 0) {
+   dealV0 <- dealV0 + 11 + (no_aces - 1)
+  }
+  tot <- dealV0
+  while (tot < 17) {
+    next_card <- remain_cards[1, ]
+    remain_cards <- remain_cards[-1, ]
+    D <- rbind(D, next_card)
+    if (next_card$card != "A") {
+      tot <- tot + next_card$value
+    } else if (tot + 11 > 17) {
+      tot <- tot + 11
+    } else {
+      tot <- tot + 1
+    }
+  }
+  return(list(D = D, remain_cards = remain_cards))
+}
+
+```
+
+
+
+### Exercise 3
+
+Combining all the steps, one round of Blackjack looks like this:
+
+```{r s4e0, exercise=TRUE, exercise.setup = "pS2"}
+blackjack_round <- function(blackjack_cards, shuffle = TRUE){
+  # Set up the initial deal:
+  init <- init_deal(blackjack_cards, shuffle)
+  Drev <- init$dealer_hand[1, ]
+  players_turn <- participants_play(init$player_hand, Drev, init$remaining_cards)
+  dealers_turn <- dealers_play(init$dealer_hand, players_turn$remain_cards)
+  remain_cards <- dealers_turn$remain_cards
+  
+  players_hand <- players_turn$H
+  players_points <- count_points(players_turn$H)
+  dealers_hand <- dealers_turn$D
+  dealers_points <- count_points(dealers_turn$D)
+
+  cat("Player's final hand:", players_hand$card, "\n")
+  cat("Players's final points:", players_points, "\n")
+  cat("Dealer's final hand:", dealers_hand$card, "\n")
+  cat("Dealer's final points:", dealers_points, "\n")
+  
+  player_diff <- 21 - players_points
+  dealer_diff <- 21 - dealers_points
+  
+  score <- c()
+  if ((dealer_diff == player_diff) || (dealer_diff < 0 && player_diff < 0)) {
+    cat("Player push with the dealer.")
+    score <- c(score, 0)
+  } else if (dealer_diff >= 0 && (dealer_diff < player_diff || player_diff < 0)) {
+    cat("Player lost.")
+    score <- c(score, -1)
+  } else {
+    cat("Player won!")
+    score <- c(score, 1)
+  }
+  return(list(remain_cards = remain_cards, players_hand = players_hand, 
+              players_points = players_points, dealers_hand = dealers_hand,
+              dealers_points = dealers_points, score = score))
+}
+```
+
+###
+
+Write a forloop to simulate 10 rounds of Blackjack
+remeber to remove cards after every round. 
+Shuffle only on first round. For every round
+print out the player's and dealer's hand and points
+as well as whether the player won or lost: 
+
+```{r s4e3, exercise=TRUE, exercise.setup = "pS2"}
+# Complete the following code
+remain_cards <- blackjack_cards[sample(1:nrow(blackjack_cards), nrow(blackjack_cards)), ]
+for (round in 1:10) {
+  
+  ...
+  
+}
+```
+
+```{r s4e3-solution}
+set.seed(1234)
+remain_cards <- blackjack_cards[sample(1:nrow(blackjack_cards), nrow(blackjack_cards)), ]
+for (r in 1:10) {
+  cat("\n Round:", r, "\n")
+  bj_round <- blackjack_round(remain_cards, shuffle = FALSE)
+  remain_cards <- bj_round$remain_cards
+}
+```
+
+
+### Exercise 4
+
+Use `sapply()` function to generate a vector whose elements are equal to the total number of 
+points for all non-ace cards (not "A"s) included in a stack composed of 1,2, .., 10 standard 
+52-card-decks.
+
+```{r s4e4, exercise=TRUE, exercise.setup = "pS2"}
+sapply(1:10, function(i) {
+
+})
+```
+
+```{r s4e4-solution}
+sapply(1:10, function(i) {
+  stack <- card_deck[rep(1:nrow(card_deck), i), ]
+  tot <- sum(stack$value[stack$card != "A"])
+})
+```
+
+The end of the tutorial.

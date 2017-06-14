@@ -1,0 +1,561 @@
+---
+title: "Data into R"
+author: Lan Huong Nguyen
+tutorial:
+  id: "com.exercises.data-to-R"
+  version: 1.0
+output: 
+  learnr::tutorial:
+     progressive: true
+runtime: shiny_prerendered
+---
+
+options(tutorial.exercise.timelimit = 10)
+
+```{r setup, include=FALSE}
+library(learnr)
+library(checkr)
+library(knitr)
+knitr::opts_chunk$set(echo = FALSE, exercise.checker = checkr::checkr_tutor)
+```
+
+
+## Importing data
+
+*Enter your code directly into the chunks and press the 'Run Code' button to execute it.
+There are multiple exercises for each topic, you must complete an exercise and press 'Continue'
+to move onto the next one. Only once a tick mark appears next to every exercise should you 
+be able to continue to the next section.*
+
+
+### Exercise 1
+
+**Download 'Credit.csv' file** from http://www-bcf.usc.edu/~gareth/ISL/data.html 
+to your 'Downloads' directory. Set the 'current directory' to be the 'Downloads' folder,
+which now contains the 'Credit.csv' file. 
+
+```{r s1e1, exercise=TRUE}
+
+```
+
+```{r s1e1-hint}
+# Use the following setwd() function
+```
+
+```{r s1e1-solution}
+# Set the current directory to 'Downloads' folder folder:
+setwd("~/Downloads/")
+```
+
+
+###
+
+```{r, pDir}
+setwd("~/Downloads/")
+```
+
+
+Use `file.show()` function to display the contants of the file 'Credit.csv'
+in 'dataset' directory:
+
+```{r s1e1i, exercise=TRUE, exercise.setup = "pDir"}
+
+```
+
+```{r s1e1i-solution}
+file.show("Credit.csv")
+```
+
+
+###
+
+Now import the data into R using the `read.table()` function
+and assign it to 'credit' variable:
+
+```{r s1e1ii, exercise=TRUE, exercise.setup = "pDir"}
+credit <- 
+```
+
+```{r s1e1ii-solution}
+credit <- read.csv("~/Downloads/Credit.csv")
+# or 
+# credit <- read.csv("Credit.csv")
+```
+
+```{r s1e1ii-check}
+test_0 <- find_statement("credit", "you need to create a data.frame named 'credit'")
+test_1 <- find_call("read.csv(whatever)", "you need to use `read.csv()` function")
+
+USER_CODE %>% test_0 %>% test_1 
+```
+
+
+###
+
+```{r pS1}
+credit <- read.csv("~/Downloads/Credit.csv")
+```
+
+
+Check what is the class of 'credit' variable
+
+```{r s1e1iii, exercise=TRUE, exercise.setup = "pS1"}
+
+```
+
+```{r s1e1iii-solution}
+class(credit)
+```
+
+```{r s1e1iii-check}
+test_1 <- find_call("class(whatever)", "you need to use `class()` function")
+test_2 <- find_statement("credit", "you need to use a data.frame 'credit'")
+
+USER_CODE %>% test_1 %>% test_2
+soln_test(USER_CODE, SOLN_CODE, res = final_, 
+          same_(function(S, R, hint = hint) {ifelse(identical(S, R), "", "not correct results")}, 
+                substitute(res)))
+```
+
+###
+
+Print first six lines of 'credit'.
+To nicely display the table in this html based tutorial,
+you can wrap your answer with `knitr::kable()` function.
+
+```{r s1e1iv, exercise=TRUE, exercise.setup = "pS1"}
+
+```
+
+```{r s1e1iv-solution}
+knitr::kable(head(credit))
+```
+
+```{r s1e1iv-check}
+test_1 <- find_statement("head", "you need to use `head()` function")
+test_2 <- find_statement("credit", "you need to use a data.frame 'credit'")
+USER_CODE %>% test_1 %>% test_2
+```
+
+###
+
+Note that the first column contains the copy of the rownames and is named 'X'.
+This is because the original data in the "Credits.csv" file containt rownames,
+and so the first row contained one fewer values than each subsequent ones.
+This is why R generated a column name "X" for the missing column name.
+
+Correct this double row names situation, by correctly reading data into R,
+telling it where the row names are included. Check the `read.csv()` documentation
+using `?read.csv`.
+
+
+
+```{r s1e1v, exercise=TRUE, exercise.setup = "pDir"}
+
+```
+
+
+```{r s1e1v-hint}
+# Use the row.names arguments in read.csv() function.
+```
+
+```{r s1e1v-solution}
+credit <- read.csv("Credit.csv", row.names = 1)
+```
+
+```{r s1e1v-check}
+test_1 <- find_call("read.csv(whatever)", "you need to use `head()` function")
+test_2 <- find_statement("row.names", "you should use a row.names argument")
+USER_CODE %>% test_1 %>% test_2
+```
+
+
+###
+
+```{r pS1i}
+credit <- read.csv("~/Downloads/Credit.csv", row.names = 1)
+```
+
+Use `head()` to again print first few lines of credit. Notice the change:
+
+```{r s1e1vi, exercise=TRUE, exercise.setup = "pS1i"}
+
+```
+
+
+```{r s1e1vi-solution}
+knitr::kable(head(credit))
+```
+
+
+```{r s1e1vi-check}
+test_1 <- find_statement("head", "you need to use `head()` function")
+test_2 <- find_statement("credit", "you need to use a data.frame 'credit'")
+USER_CODE %>% test_1 %>% test_2
+```
+
+**Note** that now there is no column with the row names.
+
+### 
+
+The data in 'Credits.csv' is used for examples in *An Introduction to Statistical Learning* book 
+and the file was downloaded from http://www-bcf.usc.edu/~gareth/ISL/Credit.csv 
+
+It is very convenient feature of the R read function including `read.csv()`
+and `read.table()` that data hosted online can be directly read into R
+without a prior download to your local machine. See the following:
+
+
+```{r s1e1vii, exercise=TRUE}
+credit <- read.csv("http://www-bcf.usc.edu/~gareth/ISL/Credit.csv ", row.names = 1)
+head(credit)
+```
+
+Observe that 'credit' data.frame is the same as before.
+
+
+### Exercise 2
+
+**Download** 'College.csv' file from 
+http://www-bcf.usc.edu/~gareth/ISL/data.html to your 'Downloads'
+directory. Then use `scan()` function to read the first 10 lines
+of the data:
+
+```{r s1e2,  exercise=TRUE, exercise.setup = "pDir"}
+
+```
+
+```{r s1e2-hint-1}
+# Use function scan() and specify 'what' to be "" or character()
+```
+
+```{r s1e2-hint-2}
+# Specify the 'sep' argument to be "\n" so that every line is read separately as
+# one element of a list.
+```
+
+```{r s1e2-hint-3}
+# Specify the 'nlines' argument to be 10.
+```
+
+```{r s1e2-solution}
+scan("~/Downloads/College.csv", "", sep = "\n", nlines = 10)
+```
+
+
+
+```{r s1e2-check}
+test_1 <- find_call("scan(whatever)", "you need to use `scan()` function")
+test_2 <- find_call("scan(whatever, whatever)", "you need to specify 'what' argument")
+test_3 <- find_statement("College.csv", "you need toread 'Colleges.csv' file")
+test_4 <- find_statement("sep", "you need to specify a 'sep' argument")
+test_5 <- find_statement("nlines", "you need to specify a 'nlines' argument")
+
+USER_CODE %>% test_1 %>% test_2 %>% test_3 %>% test_4 %>% test_5
+USER_CODE <- paste0('setwd("~/Downloads/");', as.character(USER_CODE$expressions))
+USER_CODE <- capture.code(USER_CODE)
+soln_test(USER_CODE, SOLN_CODE, res = final_, 
+          same_(function(S, R, hint = hint) {ifelse(identical(S, R), "", "not correct results")}, 
+                substitute(res)))
+```
+
+
+### Exercise 3
+
+NASA's online data portal includes many interesting datasets you can download.
+One of them is a datasets listing all the NASA facilities available
+at http://open.nasa.gov/datasets/NASA_Labs_Facilities.xlsx.
+
+Download the 'NASA_Labs_Facilities.xlsx' file to your Downloads folder:
+
+```{r s1e3_1, exercise=TRUE}
+download.file("http://open.nasa.gov/datasets/NASA_Labs_Facilities.xlsx",
+              destfile = "~/Downloads/NASA_Facilities.xlsx")
+```
+
+If you havent already, please uncomment and install package 'readxl' which 
+has functionalities for reading Excel. Then, load the package into memory:
+
+```{r s1e3_0, exercise=TRUE}
+#install.packages("readxl", repos="http://cran.us.r-project.org")
+library(readxl)
+```
+
+```{r p_s1e3}
+library(readxl)
+nasa_fc <- read_excel("~/Downloads/NASA_Facilities.xlsx")
+```
+
+###
+
+Read the file into 'nasa_fc' variable using `read_excel()` function.
+You can check the function documentation by typing `?read_excel`.
+
+```{r s1e3, exercise=TRUE, exercise.setup = "p_s1e3"}
+nasa_fc <- 
+```
+
+
+```{r s1e3-solution}
+nasa_fc <- read_excel("~/Downloads/NASA_Facilities.xlsx")
+```
+
+```{r s1e3-check}
+test_0 <- find_assignment("nasa_fc", "you need to read into 'nasa_fc' variable")
+test_1 <- find_call("read_excel(whatever)", "you need to use `read_excel()` function")
+USER_CODE %>% test_0 %>% test_1 
+soln_test(USER_CODE, SOLN_CODE, res = final_, 
+          same_(function(S, R, hint = hint) {ifelse(identical(S, R), "", "not correct results")}, 
+                substitute(res)))
+```
+
+
+###
+
+
+```{r s1e3_2, exercise=TRUE, exercise.setup = "p_s1e3"}
+class(nasa_fc)
+```
+
+`read_excel()` output is of class 'tibble'. Convert it to a more familiar 
+data.frame class:
+
+```{r s1e3i, exercise=TRUE, exercise.setup = "p_s1e3"}
+
+```
+
+```{r s1e3i-solution}
+nasa_fc.df <- as.data.frame(nasa_fc)
+```
+
+```{r s1e3i-check}
+test_0 <- find_statement("nasa_fc", "you need to read into 'nasa_fc' variable")
+test_1 <- find_call("as.data.frame(whatever)", "you need to use `as.data.frame()` function")
+USER_CODE %>% test_0 %>% test_1 
+soln_test(USER_CODE, SOLN_CODE, res = final_, 
+          same_(function(S, R, hint = hint) {ifelse(identical(S, R), "", "not correct results")}, 
+                substitute(res)))
+```
+
+
+```{r p_s1e3i}
+nasa_fc <- readxl::read_excel("~/Downloads/NASA_Facilities.xlsx")
+nasa_fc.df <- as.data.frame(nasa_fc)
+```
+
+The class of 'nasa_fc.df' is now of class:
+
+```{r s1e3_3, exercise=TRUE, exercise.setup = "p_s1e3i"}
+class(nasa_fc.df)
+```
+
+
+### 
+
+Print the first 10 lines of 'nasa_fc.df':
+
+```{r s1e3ii, exercise=TRUE, exercise.setup = "p_s1e3i"}
+
+```
+
+
+```{r s1e3ii-solution}
+head(nasa_fc.df, 10)
+```
+
+```{r s1e3ii-check}
+test_0 <- find_call("head(whatever)", "you need to use `head()` function")
+test_1 <- find_call("head(whatever, whatever)", "you need to use two arguments of `head()`.")
+
+USER_CODE %>% test_0 %>% test_1 
+soln_test(USER_CODE, SOLN_CODE, res = final_, 
+          same_(function(S, R, hint = hint) {ifelse(identical(S, R), "", "not correct results")}, 
+                substitute(res)))
+```
+
+### 
+
+**Note** that R generated some column names e.g. "X__1", this is because
+the Excel file we used included some merged columns. If you'd like to remove
+the top merged column names, use the 'skip' argument when calling 'read_excel()' function:
+
+```{r s1e3iii, exercise = TRUE, exercise.setup = "p_s1e3"}
+nasa_fc <- read_excel("~/Downloads/NASA_Facilities.xlsx", skip = 1)
+nasa_fc.df <- as.data.frame(nasa_fc)
+head(nasa_fc.df)
+```
+
+```{r "p_s1e3iv"}
+nasa_fc <- readxl::read_excel("~/Downloads/NASA_Facilities.xlsx", skip = 1)
+nasa_fc.df <- as.data.frame(nasa_fc)
+```
+
+### 
+
+Note that the first column denotes the row index, but is incorrectly
+labelled 'Agency'. Change the name of the first column to 'ID',
+and the second column one to 'Agency' and print first few lines of
+the altered data.frame:
+
+```{r s1e3iv, exercise = TRUE, exercise.setup = "p_s1e3iv"}
+
+```
+
+
+```{r s1e3iv-solution}
+colnames(nasa_fc.df)[1] <- "ID"
+colnames(nasa_fc.df)[2] <- "Agency"
+head(nasa_fc.df)
+```
+
+
+The end of the section.
+
+## Saving data
+
+*Enter your code directly into the chunks and press the 'Run Code' button to execute it.
+There are multiple exercises for each topic, you must complete an exercise and press 'Continue'
+to move onto the next one. Only once a tick mark appears next to every exercise should you 
+be able to continue to the next section.*
+
+
+### Exercise 1
+
+Set the current directory to be the 'Documents' folder:
+
+```{r s2e00, exercise=TRUE}
+setwd("~/Documents/")
+```
+
+
+###
+
+Suppose you have created a following data.frame storing information
+on some characters from Harry Potter:
+
+
+```{r s2e0, exercise=TRUE}
+hp_info <- data.frame(first = c("Harry", "Ron", "Hermione", "Ginny"), 
+                      last = c("Potter", "Wesley", "Granger", "Wesley"),
+                      gender = c("M", "M", "F", "F"),
+                      date = c(31, 1, 19, 11),
+                      month = c("Jul","March", "Sep", "Aug"))
+```
+
+
+###
+
+```{r, pS2}
+setwd("~/Documents/")
+hp_info <- data.frame(first = c("Harry", "Ron", "Hermione", "Ginny"), 
+                      last = c("Potter", "Wesley", "Granger", "Wesley"),
+                      gender = c("M", "M", "F", "F"),
+                      date = c(31, 1, 19, 11),
+                      month = c("Jul","March", "Sep", "Aug"))
+
+nasa_fc <- readxl::read_excel("~/Downloads/NASA_Facilities.xlsx", skip = 1)
+nasa_fc.df <- as.data.frame(nasa_fc)
+colnames(nasa_fc.df)[1] <- "ID"
+colnames(nasa_fc.df)[2] <- "Agency"
+
+credit <- read.csv("http://www-bcf.usc.edu/~gareth/ISL/Credit.csv ", row.names = 1)
+```
+
+Write (save) the 'hp_info' data.frame to a file 'harry_potter.txt'
+
+```{r s2e1i, exercise = TRUE, exercise.setup = "pS2"}
+
+```
+
+```{r s2e1i-solution}
+write.table(hp_info, file="harry_potter.txt")
+```
+
+###
+
+```{r s2q1}
+question('Where was the file saved?',
+    answer('in Desktop'),
+    answer('in Documents', correct = TRUE),
+    answer('in the current directory', correct = TRUE),
+    answer('in a temporary directory'),
+    answer('in Downloads'),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+```
+
+
+###
+
+Save 'nasa_fc.df' and 'credit' data generated earlier in the session 
+to file 'mydata.rdata':
+
+```{r s2e1iii, exercise=TRUE, exercise.setup = "pS2"}
+
+```
+
+```{r s2e1iii-hint}
+# Use save() function
+```
+
+```{r s2e1iii-solution}
+save(nasa_fc.df, credit, file="mydata.rdata")
+```
+
+###
+
+Use `ls()` function to print out all the variables/objects generated in the session
+and saved inmemory:
+
+```{r, s2e11, exercise = TRUE, exercise.setup = "pS2"}
+ls()
+```
+
+You might have noticed an unfamiliar *server_context* variable.
+This object was not generated by you, but was created by R for the
+purpose of running this tutorial application. 
+
+
+###
+
+Remove all data generated in the session using `rm()` function:
+
+```{r, s2e111, exercise = TRUE}
+rm(list = ls())
+```
+
+
+Check that now memory is empty:
+
+```{r pS22}
+rm(list = ls())
+```
+
+
+```{r, s2e1111, exercise = TRUE, exercise.setup = "pS22"}
+ls()
+```
+
+
+
+### 
+
+Load all the objects saved in 'mydata.rdata'
+and check that 'nasa_fc.df' and 'credit' objects are restored:
+
+```{r, s2e1vi, exercise = TRUE}
+
+```
+
+```{r, s2e1vi-hint}
+# Use load() to restore the data and and ls() to print out all the variables
+```
+
+```{r, s2e1vi-solution}
+load("~/Documents/mydata.rdata")
+ls()
+```
+
+
+The end of the tutorial.
