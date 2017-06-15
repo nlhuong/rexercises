@@ -3,14 +3,12 @@ title: "Data Frames"
 author: Lan Huong Nguyen
 tutorial:
   id: "com.exercises.data-frames"
-  version: 100.1
+  version: 0.1
 output: 
   learnr::tutorial:
      progressive: true
 runtime: shiny_prerendered
 ---
-
-options(tutorial.exercise.timelimit = 10)
 
 
 ```{r setup, include=FALSE}
@@ -18,6 +16,7 @@ library(learnr)
 library(checkr)
 library(knitr)
 knitr::opts_chunk$set(echo = FALSE, exercise.checker = checkr::checkr_tutor)
+tutorial_options(exercise.timelimit = 60)
 ```
 
 
@@ -75,14 +74,11 @@ calendar <- list(1910:2017,
 ```{r s1e1-check}
 test_0 <- find_assignment("calendar", "you need to create a list named 'calendar'")
 test_1 <- find_call("list(whatever)", "you need to use list() function")
-test_2 <- check_value(agrees(all(x[[1]] == 1910:2017)), "the first element of the list must be 1910:2017")
-test_3 <- check_value(agrees(all(x[[2]] == c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))), 
-                      "the second element of the list must be a character vector of abrreviations 12 months.")
-test_4 <- check_value(agrees(all(x[[3]] == 1:31)), "the thrird element of the list must be 1:31")
 
-USER_CODE %>% test_0 %>% test_1 %>% final_ %>% test_2 
-USER_CODE %>% test_0 %>% test_1 %>% final_ %>% test_3
-USER_CODE %>% test_0 %>% test_1 %>% final_ %>% test_4
+USER_CODE %>% test_0 %>% test_1 
+soln_test(USER_CODE, SOLN_CODE, res = final_, 
+          same_(function(S, R, hint = hint) {ifelse(identical(S, R), "", "not correct results")}, 
+                substitute(res)))
 ```
 
 If you haven't named the elements of your 'calendar' vector `c("year", "month", "date")`

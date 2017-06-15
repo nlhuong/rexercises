@@ -1,0 +1,10 @@
+Package: rexercises
+Type: Package
+Title: Intro to R exercises
+Version: 1.0
+Date: 2017-06-14
+Author: Lan Huong Nguyen
+Maintainer: Lan Huong Nguyen <nlhuong90@gmail.com>
+Description: Package include tutorials with intro to R exercises. It is based on learnr package. 
+License: MIT
+RoxygenNote: 6.0.1
