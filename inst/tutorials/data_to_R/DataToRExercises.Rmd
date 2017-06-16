@@ -256,16 +256,18 @@ at http://open.nasa.gov/datasets/NASA_Labs_Facilities.xlsx.
 Download the 'NASA_Labs_Facilities.xlsx' file to your 'Downloads' directory:
 
 ```{r s1e3_1, exercise=TRUE}
+url1 <- "http://open.nasa.gov/datasets/NASA_Labs_Facilities.xlsx"
+
 # Download to e.g. the Download directory
-download.file("http://open.nasa.gov/datasets/NASA_Labs_Facilities.xlsx",
-              destfile = "~/Downloads/NASA_Facilities.xlsx")
+download.file(url1, destfile = "~/Downloads/NASA_Facilities.xlsx")
 ```
+
 
 If you havent already, please uncomment and install package 'readxl' which 
 has functionalities for reading Excel. Then, load the package into memory:
 
 ```{r s1e3_0, exercise=TRUE}
-#install.packages("readxl", repos="http://cran.us.r-project.org")
+# install.packages("readxl", repos="http://cran.us.r-project.org")
 library(readxl)
 ```
 
