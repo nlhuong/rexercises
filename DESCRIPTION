@@ -12,4 +12,7 @@ Imports:
     learnr,
     checkr,
     knitr
+Remote:
+    dtkaplan/checkr,
+    rstudio/learnr
 RoxygenNote: 6.0.1
