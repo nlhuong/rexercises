@@ -14,6 +14,8 @@ library(learnr)
 library(checkr)
 library(knitr)
 knitr::opts_chunk$set(echo = FALSE, exercise.checker = checkr::checkr_tutor)
+tutorial_options(exercise.timelimit = 20)
+
 ```
 
 
