@@ -3,7 +3,7 @@ title: "Data into R"
 author: Lan Huong Nguyen
 tutorial:
   id: "com.exercises.data-to-R"
-  version: 1.0
+  version: 0.1
 output: 
   learnr::tutorial:
      progressive: true
@@ -16,7 +16,7 @@ library(learnr)
 library(checkr)
 library(knitr)
 knitr::opts_chunk$set(echo = FALSE, exercise.checker = checkr::checkr_tutor)
-tutorial_options(exercise.timelimit = 60)
+tutorial_options(exercise.timelimit = 30)
 ```
 
 
@@ -31,45 +31,30 @@ be able to continue to the next section.*
 ### Exercise 1
 
 **Download 'Credit.csv' file** from http://www-bcf.usc.edu/~gareth/ISL/data.html 
-to your 'Downloads' directory. Set the 'current directory' to be the 'Downloads' folder,
-which now contains the 'Credit.csv' file. 
+to the 'Downloads' directory:
 
-```{r s1e1, exercise=TRUE}
-
+```{r s1e0, exercise=TRUE}
+# Download to e.g. the Download directory
+download.file("http://www-bcf.usc.edu/~gareth/ISL/Credit.csv",
+              destfile = "~/Downloads/Credit.csv")
 ```
-
-```{r s1e1-hint}
-# Use the following setwd() function
-```
-
-```{r s1e1-solution}
-# Set the current directory to 'Downloads' folder folder:
-setwd("~/Downloads/")
-```
-
-
-###
-
-```{r, pDir}
-setwd("~/Downloads/")
-```
-
 
 Use `file.show()` function to display the contants of the file 'Credit.csv'
 in 'dataset' directory:
+
 
 ```{r s1e1i, exercise=TRUE, exercise.setup = "pDir"}
 
 ```
 
 ```{r s1e1i-solution}
-file.show("Credit.csv")
+file.show("~/Downloads/Credit.csv")
 ```
 
 
 ###
 
-Now import the data into R using the `read.table()` function
+Now import the data into R using the `read.csv()` function
 and assign it to 'credit' variable:
 
 ```{r s1e1ii, exercise=TRUE, exercise.setup = "pDir"}
@@ -93,7 +78,7 @@ USER_CODE %>% test_0 %>% test_1
 ###
 
 ```{r pS1}
-credit <- read.csv("~/Downloads/Credit.csv")
+credit <- read.csv("http://www-bcf.usc.edu/~gareth/ISL/Credit.csv")
 ```
 
 
@@ -120,15 +105,14 @@ soln_test(USER_CODE, SOLN_CODE, res = final_,
 ###
 
 Print first six lines of 'credit'.
-To nicely display the table in this html based tutorial,
-you can wrap your answer with `knitr::kable()` function.
+To nicely display the table in this html based tutorial.
 
 ```{r s1e1iv, exercise=TRUE, exercise.setup = "pS1"}
 
 ```
 
 ```{r s1e1iv-solution}
-knitr::kable(head(credit))
+head(credit)
 ```
 
 ```{r s1e1iv-check}
@@ -139,13 +123,13 @@ USER_CODE %>% test_1 %>% test_2
 
 ###
 
-Note that the first column contains the copy of the rownames and is named 'X'.
-This is because the original data in the "Credits.csv" file containt rownames,
-and so the first row contained one fewer values than each subsequent ones.
-This is why R generated a column name "X" for the missing column name.
+Note that the first column contains the copy of the rownames.
+This is because the original data in the "Credits.csv" file contains
+a column for rownames. In R data.frames already have row names 
+assigned separately, so you can remove this column.
 
-Correct this double row names situation, by correctly reading data into R,
-telling it where the row names are included. Check the `read.csv()` documentation
+Read the data into R again, but this time tell
+R which column contains the row names. Check the `read.csv()` documentation
 using `?read.csv`.
 
 
@@ -160,7 +144,7 @@ using `?read.csv`.
 ```
 
 ```{r s1e1v-solution}
-credit <- read.csv("Credit.csv", row.names = 1)
+credit <- read.csv("~/Downloads/Credit.csv", row.names = 1)
 ```
 
 ```{r s1e1v-check}
@@ -173,7 +157,7 @@ USER_CODE %>% test_1 %>% test_2
 ###
 
 ```{r pS1i}
-credit <- read.csv("~/Downloads/Credit.csv", row.names = 1)
+credit <- read.csv("http://www-bcf.usc.edu/~gareth/ISL/Credit.csv", row.names = 1)
 ```
 
 Use `head()` to again print first few lines of credit. Notice the change:
@@ -184,7 +168,7 @@ Use `head()` to again print first few lines of credit. Notice the change:
 
 
 ```{r s1e1vi-solution}
-knitr::kable(head(credit))
+head(credit)
 ```
 
 
@@ -207,7 +191,7 @@ without a prior download to your local machine. See the following:
 
 
 ```{r s1e1vii, exercise=TRUE}
-credit <- read.csv("http://www-bcf.usc.edu/~gareth/ISL/Credit.csv ", row.names = 1)
+credit <- read.csv("http://www-bcf.usc.edu/~gareth/ISL/Credit.csv", row.names = 1)
 head(credit)
 ```
 
@@ -216,9 +200,17 @@ Observe that 'credit' data.frame is the same as before.
 
 ### Exercise 2
 
-**Download** 'College.csv' file from 
-http://www-bcf.usc.edu/~gareth/ISL/data.html to your 'Downloads'
-directory. Then use `scan()` function to read the first 10 lines
+**Download** 'College.csv' file fromhttp://www-bcf.usc.edu/~gareth/ISL/data.html 
+to 'Downloads' folder:
+
+```{r s1e00, exercise=TRUE}
+# Download to e.g. the Download directory
+download.file("http://www-bcf.usc.edu/~gareth/ISL/College.csv",
+              destfile = "~/Downloads/College.csv")
+```
+
+
+Then use `scan()` function to read the first 10 lines
 of the data:
 
 ```{r s1e2,  exercise=TRUE, exercise.setup = "pDir"}
@@ -252,11 +244,6 @@ test_4 <- find_statement("sep", "you need to specify a 'sep' argument")
 test_5 <- find_statement("nlines", "you need to specify a 'nlines' argument")
 
 USER_CODE %>% test_1 %>% test_2 %>% test_3 %>% test_4 %>% test_5
-USER_CODE <- paste0('setwd("~/Downloads/");', as.character(USER_CODE$expressions))
-USER_CODE <- capture.code(USER_CODE)
-soln_test(USER_CODE, SOLN_CODE, res = final_, 
-          same_(function(S, R, hint = hint) {ifelse(identical(S, R), "", "not correct results")}, 
-                substitute(res)))
 ```
 
 
@@ -266,9 +253,10 @@ NASA's online data portal includes many interesting datasets you can download.
 One of them is a datasets listing all the NASA facilities available
 at http://open.nasa.gov/datasets/NASA_Labs_Facilities.xlsx.
 
-Download the 'NASA_Labs_Facilities.xlsx' file to your Downloads folder:
+Download the 'NASA_Labs_Facilities.xlsx' file to your 'Downloads' directory:
 
 ```{r s1e3_1, exercise=TRUE}
+# Download to e.g. the Download directory
 download.file("http://open.nasa.gov/datasets/NASA_Labs_Facilities.xlsx",
               destfile = "~/Downloads/NASA_Facilities.xlsx")
 ```
@@ -421,7 +409,7 @@ be able to continue to the next section.*
 
 ### Exercise 1
 
-Set the current directory to be the 'Documents' folder:
+Set the current directory to be the 'Documents' folder.
 
 ```{r s2e00, exercise=TRUE}
 setwd("~/Documents/")
@@ -541,8 +529,8 @@ ls()
 
 ### 
 
-Load all the objects saved in 'mydata.rdata'
-and check that 'nasa_fc.df' and 'credit' objects are restored:
+Load all the objects saved in 'mydata.rdata' and check that 'nasa_fc.df' and 
+'credit' objects are restored:
 
 ```{r, s2e1vi, exercise = TRUE}
 
@@ -553,7 +541,7 @@ and check that 'nasa_fc.df' and 'credit' objects are restored:
 ```
 
 ```{r, s2e1vi-solution}
-load("~/Documents/mydata.rdata")
+load("mydata.rdata")
 ls()
 ```
 

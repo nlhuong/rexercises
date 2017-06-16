@@ -3,7 +3,7 @@ title: "Base Plotting"
 author: Lan Huong Nguyen
 tutorial:
   id: "com.exercises.base-plotting"
-  version: 100.0
+  version: 1.0
 output: 
   learnr::tutorial:
      progressive: true
@@ -18,10 +18,25 @@ library(learnr)
 library(checkr)
 library(knitr)
 knitr::opts_chunk$set(echo = FALSE, exercise.checker = checkr::checkr_tutor)
+energy <- read.csv("https://www.eia.gov/totalenergy/data/browser/csv.cfm?tbl=T01.03")
 ```
 
+```{r pS1, warning=FALSE, message=FALSE}
+energy <- read.csv("https://www.eia.gov/totalenergy/data/browser/csv.cfm?tbl=T01.03", 
+                   stringsAsFactors = FALSE)
+energy$Value <- suppressWarnings(as.numeric(energy$Value)) # convert to numeric values
+energy$Year <- sapply(energy$YYYYMM, function(x) {substr(x, 1, 4)})
+energy$Month <- sapply(energy$YYYYMM, function(x) {substr(x, 5, 6)})
+energy <- energy[energy$Month != "13", ]
+annual_energy <- aggregate(Value~Description+Year, energy, sum)
+annual_energy <- annual_energy[annual_energy$Year != 2017, ]
+coal <- annual_energy[annual_energy$Description == "Coal Consumption", ]
+natgas <- annual_energy[annual_energy$Description == "Natural Gas Consumption (Excluding Supplemental Gaseous Fuels)", ]
+nucl <- annual_energy[annual_energy$Description == "Nuclear Electric Power Consumption", ]
+renew <- annual_energy[annual_energy$Description == "Total Renewable Energy Consumption", ]
+```
 
-## 
+## X-Y plots
 
 *Enter your code directly into the chunks and press the 'Run Code' button to execute it.
 There are multiple exercises for each topic, you must complete an exercise and press 'Continue'
@@ -31,38 +46,366 @@ be able to continue to the next section.*
 
 ### Exercise 1
 
-**Download 'Credit.csv' file** from http://www-bcf.usc.edu/~gareth/ISL/data.html 
-to your 'Downloads' directory. Set the 'current directory' to be the 'Downloads' folder,
-which now contains the 'Credit.csv' file. 
+In this exercise we will plot the trends in the U.S. energy consumption
+by source. First, read the data from https://www.eia.gov/totalenergy/data/browser/csv.cfm?tbl=T01.03
 
-```{r s1e1, exercise=TRUE}
+```{r s1e0, exercise=TRUE}
+energy <- read.csv("https://www.eia.gov/totalenergy/data/browser/csv.cfm?tbl=T01.03",
+                    stringsAsFactors = FALSE)
+energy$Value <- as.numeric(energy$Value) # convert to numeric values
+knitr::kable(head(energy))
+```
+
+### Preprocessing:
+
+In the data.frame 'energy', the column 'Description' gives the type of
+enery source. Column 'Value' gives the actual consumption in Quadrillion 
+BTU units.
+
+Note that, the data.frame 'energy' contains a column 'YYYYMM' which stands for
+year and month of the measurement. We will convert this data to a date format
+in R:
+
+```{r s1e00, exercise=TRUE}
+energy$Year <- sapply(energy$YYYYMM, function(x) {substr(x, 1, 4)})
+energy$Month <- sapply(energy$YYYYMM, function(x) {substr(x, 5, 6)})
+```
+
+There are some entries in the data that indicate month '13', which does not
+make sense. Since, we do not know what exactly this means, we will
+treat these entries as invalid and remove them:
+
+```{r s1e000, exercise=TRUE, exercise.setup = "pS1"}
+energy <- energy[energy$Month != "13", ]
+knitr::kable(head(energy))
+```
+
+###
+
+Use the `plot()` function to produce a scatter plot
+of the 'Coal Consumption' over time using column 'YYYYMM'
+and 'Value'
+
+```{r s1e1, exercise=TRUE, exercise.setup = "pS1"}
 
 ```
 
-```{r s1e1-hint}
-# Use the following setwd() function
+
+```{r s1e1-hint-1}
+# First subset the data:
+coal <- energy[energy$Description == "Coal Consumption", ]
+```
+
+```{r s1e1-hint-2}
+# Then use plot() on coal data.frame to plot Value over time
 ```
 
 ```{r s1e1-solution}
-# Set the current directory to 'Downloads' folder folder:
-setwd("~/Downloads/")
+coal <- energy[energy$Description == "Coal Consumption", ]
+plot(coal$YYYYMM, coal$Value)
+```
+
+###
+
+Since monthly data might be too noisy, we will aggreagate the
+total annual consumption for each type of energy source:
+
+```{r s1e0i, exercise=TRUE, exercise.setup = "pS1"}
+# Check ?agreggate for function documentation
+annual_energy <- aggregate(Value~Description+Year, energy, sum)
+knitr::kable(head(annual_energy))
 ```
 
 
 ###
 
-```{r, pDir}
-setwd("~/Downloads/")
+Also, we will remove the records for 2017, as not a whole year has
+past and it would not be thus, a fair comparison:
+
+```{r s1e00i, exercise=TRUE, exercise.setup = "pS1"}
+# Check ?agreggate for function documentation
+annual_energy <- annual_energy[annual_energy$Year != 2017, ]
 ```
 
 
-Use `file.show()` function to display the contants of the file 'Credit.csv'
-in 'dataset' directory:
 
-```{r s1e1i, exercise=TRUE, exercise.setup = "pDir"}
+###
+
+Now, extract the coal consumption from 'annual_energy' and then
+generate a line plot of the annual trands in its consumption:
+
+
+```{r s1e1i, exercise=TRUE, exercise.setup = "pS1"}
 
 ```
+
 
 ```{r s1e1i-solution}
-file.show("Credit.csv")
+coal <- annual_energy[annual_energy$Description == "Coal Consumption", ]
+plot(x = coal$Year, y = coal$Value, type = "l")
 ```
+
+### 
+
+You can add more lines using `lines()` function to compare
+consumption of different energy sources. Plot 
+coal, natural gas, nuclear and renewable energy together 
+using different colors for the lines.
+
+Run this to see the exact energy source descriptions.
+
+```{r s1e0ii, exercise=TRUE, exercise.setup = "pS1"}
+unique(annual_energy$Description)
+```
+
+Construct separate data.frames for different energy sources:
+
+```{r s1e0iii, exercise=TRUE, exercise.setup = "pS1"}
+coal <- annual_energy[annual_energy$Description == "Coal Consumption", ]
+natgas <- annual_energy[annual_energy$Description == "Natural Gas Consumption (Excluding Supplemental Gaseous Fuels)", ]
+nucl <- annual_energy[annual_energy$Description == "Nuclear Electric Power Consumption", ]
+renew <- annual_energy[annual_energy$Description == "Total Renewable Energy Consumption", ]
+```
+
+###
+
+Now, write code to generate the line plot. Remember to set the y-axis limit to be e.g. `c(0, 30)`
+using 'ylim' orgument in the `plot()` function,
+as different data.frames have different range of 'Value's.
+You should also change the x-axis and the y-axis
+to "Year" and "Consumption" using 'xlab' and 'ylab' arguments.
+
+```{r s1e1ii, exercise=TRUE, exercise.setup = "pS1"}
+
+```
+
+
+```{r s1e1ii-solution}
+plot(x = coal$Year, y = coal$Value, type = "l", 
+     ylim = c(0, 30), xlab = "Year", ylab = "Consumption")
+lines(natgas$Year, natgas$Value, type = "l", col = "red") 
+lines(nucl$Year, nucl$Value, col = "purple")
+lines(renew$Year, renew$Value, col = "green") 
+```
+
+### 
+
+Here, generate the same graph but instead of lines plot points with
+different markers (using 'pch' argument) to denote different sournces of energy.
+Use `points()` instead of `lines()`. Also, title your plot using 'main' argument:
+
+```{r s1e1iii, exercise=TRUE, exercise.setup = "pS1"}
+
+```
+
+
+```{r s1e1iii-solution}
+plot(x = coal$Year, y = coal$Value, type = "p", pch = 15,
+     ylim = c(0, 30), xlab = "Year", ylab = "Consumption")
+points(natgas$Year, natgas$Value, col = "red", pch = 17) 
+points(nucl$Year, nucl$Value, col = "purple", pch = 18)
+points(renew$Year, renew$Value,  col = "green", pch = 19) 
+```
+
+### Exercise 2
+
+The builtin 'mtcars' data.frame contains information on
+different attributes and performance of a number of cars.
+
+```{r s1e2_0, exercise=TRUE}
+knitr::kable(head(mtcars))
+```
+
+Use it to plot milesper galon 'mpg' vs 
+horese power 'hp' and show the car model on the plot
+using `text()` function:
+
+```{r s1e2, exercise=TRUE}
+
+```
+
+
+```{r s1e2-solution}
+plot(mtcars$mpg, mtcars$hp)
+text(mtcars$mpg, mtcars$hp, rownames(mtcars))
+```
+
+
+## Image Plots
+
+
+### Exercise 1
+
+R has a built in dataset 'volcano' which gives topographic information 
+for Maunga Whau on a 10m by 10m grid. Use an `image` function to show the data.
+
+```{r s2e1, exercise=TRUE}
+
+```
+
+
+```{r s2e1-solution}
+image(volcano)
+```
+
+###
+
+Show contours on the plot:
+
+```{r s2e1i, exercise=TRUE}
+
+```
+
+
+```{r s2e1i-solution}
+image(volcano)
+contour(volcano, add = TRUE, drawlabels = FALSE)
+```
+
+
+## Histograms
+
+
+### Exercise 1
+
+The dataset 'Colleges.cvs' is available on the [website](http://www-bcf.usc.edu/~gareth/ISL/data.html) 
+of 'An Introduction to Statistical Learning' book. Read it to
+a data frame called 'colleges' using the following url:
+http://www-bcf.usc.edu/~gareth/ISL/College.csv
+
+```{r s3e1-0, exercise=TRUE}
+colleges <- read.csv("http://www-bcf.usc.edu/~gareth/ISL/College.csv")
+head(colleges)
+```
+
+```{r pS3}
+colleges <- read.csv("http://www-bcf.usc.edu/~gareth/ISL/College.csv")
+```
+
+### 
+Plot the histogram the graduation rate 'Grad.Rate' 
+for universities in the entire dataset:
+
+```{r s3e1, exercise=TRUE, exercise.setup = "pS3"}
+
+```
+
+
+```{r s3e1-solution}
+hist(colleges$Grad.Rate, xlab = "Graduation Rate")
+```
+
+###
+
+Plot the histogram of the graduation rate 'Grad.Rate' for private universities only:
+
+```{r s3e1i, exercise=TRUE, exercise=TRUE, exercise.setup = "pS3"}
+
+```
+
+
+```{r s3e1i-solution}
+hist(colleges$Grad.Rate[colleges$Private == "Yes"], 
+     main = "Histogram of graduation rate in private universities",
+     xlab = "Graduation Rate")
+```
+
+###
+
+Plot overlapping histograms of the graduation rate 'Grad.Rate' for private universities 
+and non-private ones (use different colors):
+
+```{r s3e1ii, exercise=TRUE, exercise=TRUE, exercise.setup = "pS3"}
+
+```
+
+
+```{r s3e1ii-solution}
+hist(colleges$Grad.Rate[colleges$Private == "Yes"], col=rgb(1,0,0,0.5), 
+     xlab = "Graduation Rate", main = "Histogram of graduation rates in private and public institutions.")
+hist(colleges$Grad.Rate[colleges$Private == "No"], col=rgb(0,0,1,0.5), add=T)
+```
+
+
+
+## Box plots/barplots
+
+### Exercise 1
+
+Using the same 'Colleges.csv' dataset generate a boxplot for the number of
+outstate students 'Outstate' for all universities in the dataset:
+
+```{r s4e1, exercise=TRUE, exercise.setup = "pS3"}
+
+```
+
+
+```{r s4e1-solution}
+boxplot(colleges$Outstate)
+```
+
+
+###
+
+Do the same but for private and non-private separately:
+
+```{r s4e1i, exercise=TRUE, exercise=TRUE, exercise.setup = "pS3"}
+
+```
+
+
+```{r s4e1i-solution}
+boxplot(colleges$Outstate ~ colleges$Private)
+```
+
+### Exercise 2
+
+In this exercise you will generate a bar plot for the 2016 GDP per capita
+for 46 countries. First read in the data from [OECD.org](https://data.oecd.org/gdp/gross-domestic-product-gdp.htm)
+webstile, using the following link: https://stats.oecd.org/sdmx-json/data/DP_LIVE/.GDP.TOT.USD_CAP.A/OECD?contentType=csv&detail=code&separator=comma&csv-lang=en&startPeriod=2016&endPeriod=2016
+
+```{r s4e2_0, exercise=TRUE}
+gdp <- read.csv("https://stats.oecd.org/sdmx-json/data/DP_LIVE/.GDP.TOT.USD_CAP.A/OECD?contentType=csv&detail=code&separator=comma&csv-lang=en&startPeriod=2016&endPeriod=2016")
+```
+
+
+```{r pS4}
+gdp <- read.csv("https://stats.oecd.org/sdmx-json/data/DP_LIVE/.GDP.TOT.USD_CAP.A/OECD?contentType=csv&detail=code&separator=comma&csv-lang=en&startPeriod=2016&endPeriod=2016")
+```
+
+
+```{r s4e2, exercise=TRUE, exercise.setup = "pS4"}
+
+```
+
+
+```{r s4e2-solution}
+bp <- barplot(gdp$Value, xlab = "Countries", main = "GDP per capita")
+axis(at = bp, labels = gdp$LOCATION, side = 1, cex = 0.5)
+```
+
+
+###
+
+Now sort the countries by their GDP per capita 
+and then plot the data:
+
+
+```{r s4e2i, exercise=TRUE, exercise.setup = "pS4"}
+
+```
+
+```{r s4e2i-hint}
+# Use 'order()' function to order the indices of the rows of 'gdp'
+# accourding to the 'Value' column
+```
+
+```{r s4e2i-solution}
+gdp <- gdp[order(gdp$Value), ]
+bp <- barplot(gdp$Value, xlab = "Countries", main = "GDP per capita")
+axis(at = bp, labels = gdp$LOCATION, side = 1, cex.axis=0.5)
+```
+
+
+
+The end of the tutorial.
