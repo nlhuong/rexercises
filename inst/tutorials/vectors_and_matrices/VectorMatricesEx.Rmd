@@ -3,18 +3,20 @@ title: "Vectors and Matrices"
 author: Lan Huong Nguyen
 tutorial:
   id: "com.exercises.vectors-matrices"
-  version: 1.0
+  version: 0.1
 output: 
   learnr::tutorial:
      progressive: true
 runtime: shiny_prerendered
 ---
 
+options(tutorial.exercise.timelimit = 10)
+
 ```{r setup, include=FALSE}
 library(learnr)
 library(checkr)
 knitr::opts_chunk$set(echo = FALSE, exercise.checker = checkr::checkr_tutor)
-tutorial_options(exercise.timelimit = 20)
+#tutorial_options(exercise.checker = checkthat::check_exercise)
 ```
 
 

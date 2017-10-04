@@ -40,7 +40,7 @@ download.file("http://www-bcf.usc.edu/~gareth/ISL/Credit.csv",
 ```
 
 Use `file.show()` function to display the contants of the file 'Credit.csv'
-in 'dataset' directory:
+in 'Downloads' directory:
 
 
 ```{r s1e1i, exercise=TRUE, exercise.setup = "pDir"}
