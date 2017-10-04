@@ -3,7 +3,6 @@ title: "Base Plotting"
 author: Lan Huong Nguyen
 tutorial:
   id: "com.exercises.base-plotting"
-  version: 1.0
 output: 
   learnr::tutorial:
      progressive: true
