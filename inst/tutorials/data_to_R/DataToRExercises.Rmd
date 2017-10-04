@@ -3,7 +3,7 @@ title: "Data into R"
 author: Lan Huong Nguyen
 tutorial:
   id: "com.exercises.data-to-R"
-  version: 0.1
+  version: 1.0
 output: 
   learnr::tutorial:
      progressive: true
