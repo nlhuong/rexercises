@@ -3,6 +3,7 @@ title: "Data into R"
 author: Lan Huong Nguyen
 tutorial:
   id: "com.exercises.data-to-R"
+  version: 1.1
 output: 
   learnr::tutorial:
      progressive: true
@@ -29,13 +30,12 @@ be able to continue to the next section.*
 
 ### Exercise 1
 
-**Download 'Credit.csv' file** from http://www-bcf.usc.edu/~gareth/ISL/data.html 
-to the 'Downloads' directory:
+**Download 'Credit.csv' file** from http://www-bcf.usc.edu/~gareth/ISL/data.html:
 
 ```{r s1e0, exercise=TRUE}
 # Download to e.g. the Download directory
 download.file("http://www-bcf.usc.edu/~gareth/ISL/Credit.csv",
-              destfile = "~/Downloads/Credit.csv")
+              destfile = "./Credit.csv")
 ```
 
 Use `file.show()` function to display the contants of the file 'Credit.csv'
@@ -47,7 +47,7 @@ in 'Downloads' directory:
 ```
 
 ```{r s1e1i-solution}
-file.show("~/Downloads/Credit.csv")
+file.show("Credit.csv")
 ```
 
 
@@ -61,7 +61,7 @@ credit <-
 ```
 
 ```{r s1e1ii-solution}
-credit <- read.csv("~/Downloads/Credit.csv")
+credit <- read.csv("Credit.csv")
 # or 
 # credit <- read.csv("Credit.csv")
 ```
@@ -143,7 +143,7 @@ using `?read.csv`.
 ```
 
 ```{r s1e1v-solution}
-credit <- read.csv("~/Downloads/Credit.csv", row.names = 1)
+credit <- read.csv("Credit.csv", row.names = 1)
 ```
 
 ```{r s1e1v-check}
@@ -199,13 +199,12 @@ Observe that 'credit' data.frame is the same as before.
 
 ### Exercise 2
 
-**Download** 'College.csv' file fromhttp://www-bcf.usc.edu/~gareth/ISL/data.html 
-to 'Downloads' folder:
+**Download** 'College.csv' file fromhttp://www-bcf.usc.edu/~gareth/ISL/data.html:
 
 ```{r s1e00, exercise=TRUE}
 # Download to e.g. the Download directory
 download.file("http://www-bcf.usc.edu/~gareth/ISL/College.csv",
-              destfile = "~/Downloads/College.csv")
+              destfile = "./College.csv")
 ```
 
 
@@ -230,7 +229,7 @@ of the data:
 ```
 
 ```{r s1e2-solution}
-scan("~/Downloads/College.csv", "", sep = "\n", nlines = 10)
+scan("College.csv", "", sep = "\n", nlines = 10)
 ```
 
 
@@ -258,7 +257,7 @@ Download the 'NASA_Labs_Facilities.xlsx' file to your 'Downloads' directory:
 url1 <- "http://open.nasa.gov/datasets/NASA_Labs_Facilities.xlsx"
 
 # Download to e.g. the Download directory
-download.file(url1, destfile = "~/Downloads/NASA_Facilities.xlsx")
+download.file(url1, destfile = "./NASA_Facilities.xlsx")
 ```
 
 
@@ -272,7 +271,7 @@ library(readxl)
 
 ```{r p_s1e3}
 library(readxl)
-nasa_fc <- read_excel("~/Downloads/NASA_Facilities.xlsx")
+nasa_fc <- read_excel("./NASA_Facilities.xlsx")
 ```
 
 ###
@@ -286,7 +285,7 @@ nasa_fc <-
 
 
 ```{r s1e3-solution}
-nasa_fc <- read_excel("~/Downloads/NASA_Facilities.xlsx")
+nasa_fc <- read_excel("./NASA_Facilities.xlsx")
 ```
 
 ```{r s1e3-check}
@@ -328,7 +327,7 @@ soln_test(USER_CODE, SOLN_CODE, res = final_,
 
 
 ```{r p_s1e3i}
-nasa_fc <- readxl::read_excel("~/Downloads/NASA_Facilities.xlsx")
+nasa_fc <- readxl::read_excel("NASA_Facilities.xlsx")
 nasa_fc.df <- as.data.frame(nasa_fc)
 ```
 
@@ -369,13 +368,13 @@ the Excel file we used included some merged columns. If you'd like to remove
 the top merged column names, use the 'skip' argument when calling 'read_excel()' function:
 
 ```{r s1e3iii, exercise = TRUE, exercise.setup = "p_s1e3"}
-nasa_fc <- read_excel("~/Downloads/NASA_Facilities.xlsx", skip = 1)
+nasa_fc <- read_excel("NASA_Facilities.xlsx", skip = 1)
 nasa_fc.df <- as.data.frame(nasa_fc)
 head(nasa_fc.df)
 ```
 
 ```{r "p_s1e3iv"}
-nasa_fc <- readxl::read_excel("~/Downloads/NASA_Facilities.xlsx", skip = 1)
+nasa_fc <- readxl::read_excel("NASA_Facilities.xlsx", skip = 1)
 nasa_fc.df <- as.data.frame(nasa_fc)
 ```
 
@@ -435,14 +434,13 @@ hp_info <- data.frame(first = c("Harry", "Ron", "Hermione", "Ginny"),
 ###
 
 ```{r, pS2}
-setwd("~/Documents/")
 hp_info <- data.frame(first = c("Harry", "Ron", "Hermione", "Ginny"), 
                       last = c("Potter", "Wesley", "Granger", "Wesley"),
                       gender = c("M", "M", "F", "F"),
                       date = c(31, 1, 19, 11),
                       month = c("Jul","March", "Sep", "Aug"))
 
-nasa_fc <- readxl::read_excel("~/Downloads/NASA_Facilities.xlsx", skip = 1)
+nasa_fc <- readxl::read_excel("NASA_Facilities.xlsx", skip = 1)
 nasa_fc.df <- as.data.frame(nasa_fc)
 colnames(nasa_fc.df)[1] <- "ID"
 colnames(nasa_fc.df)[2] <- "Agency"

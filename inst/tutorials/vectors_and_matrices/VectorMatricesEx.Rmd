@@ -3,7 +3,6 @@ title: "Vectors and Matrices"
 author: Lan Huong Nguyen
 tutorial:
   id: "com.exercises.vectors-matrices"
-  version: 0.1
 output: 
   learnr::tutorial:
      progressive: true
