@@ -8,9 +8,9 @@ Maintainer: Lan Huong Nguyen <nlhuong90@gmail.com>
 Description: Package include tutorials with intro to R exercises. It is based on learnr package. 
 License: MIT
 Imports:
-    learnr (>= 0.8.0.9004),
-    checkr,
-    knitr
+    learnr (>= 0.9),
+    checkr (>= 0.2.0),
+    knitr (>= 1.17)
 Remotes: dtkaplan/checkr,
     rstudio/learnr
 RoxygenNote: 6.0.1
